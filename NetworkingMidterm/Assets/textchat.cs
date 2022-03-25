@@ -29,15 +29,6 @@ public class textchat : MonoBehaviour
                 Debug.Log("Attempting Connection to server...");
                 client.Connect(server);
                 Debug.Log("Connected to IP: " + client.RemoteEndPoint.ToString());
-                int recieved = client.Receive(buffer);
-
-                Debug.Log("Recieved: " + Encoding.ASCII.GetString(buffer, 0, recieved));
-
-                string sent = "Literally Gaming";
-                byte[] msg = Encoding.ASCII.GetBytes(sent);
-
-                Debug.Log("Sent: " + sent);
-                client.Send(msg);
 
                 //release the resource
                 client.Shutdown(SocketShutdown.Both);
@@ -63,6 +54,14 @@ public class textchat : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+         int recieved = client.Receive(buffer);
+
+                Debug.Log("Recieved: " + Encoding.ASCII.GetString(buffer, 0, recieved));
+
+                string sent = "Literally Gaming";
+                byte[] msg = Encoding.ASCII.GetBytes(sent);
+
+                Debug.Log("Sent: " + sent);
+                client.Send(msg);
     }
 }
