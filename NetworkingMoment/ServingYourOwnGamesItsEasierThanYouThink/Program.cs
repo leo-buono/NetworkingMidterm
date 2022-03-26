@@ -83,6 +83,7 @@ public class TCPServer
                 Console.WriteLine("Client Connected.");
                 IPEndPoint clientEP = (IPEndPoint)handler.RemoteEndPoint;
                 Console.WriteLine("Client {0} connected at port {1}", clientEP.Address, clientEP.Port);
+                handler.Blocking = false;
                 userList.Add(new User(handler, "Player 1"));
 
             server.Blocking = false;
@@ -103,7 +104,11 @@ public class TCPServer
                         byte[] msg = Encoding.ASCII.GetBytes("Accepted");
                         handler.Send(msg);
                         //Because we are only expecting two players we can get away with this naming scheme
+                        handler.Blocking = false;
                         userList.Add(new User(handler, "Player 2"));
+
+                        //server.Blocking = false;
+                        //UDPSocket.Blocking = false;
                     }
                 }
                 catch (SocketException socke)
@@ -115,7 +120,7 @@ public class TCPServer
                 }
                 for (int i = 0; i < userList.Count; i++)
                 {
-                    UDPTCP(ref buffer, ref UDPSocket, userList[i].remoteEP, userList[i].handler, userList[i]);
+                    UDPTCP(ref buffer, ref UDPSocket, ref userList[i].remoteEP, ref userList[i].handler, userList[i]);
                 }
             }
             //handler.Shutdown(SocketShutdown.Both);
@@ -130,14 +135,12 @@ public class TCPServer
     }
 
     private void UDPTCP(ref byte[] buffer, ref Socket UDPSocket,
-        EndPoint remoteClient, Socket handler, User player)
+        ref EndPoint remoteClient, ref Socket handler, User player)
     {
-
-
-
         //Create a loop so that you can loop through all the users that are connected and do something about it 
         try
         {
+            //Ok so it's waiting here to recieve something. I should make sure the socket is nonblocking because that could be a problem
             int recieved = handler.Receive(buffer);
 
             Console.WriteLine("Recieved: {0}", Encoding.ASCII.GetString(buffer, 0, recieved));
