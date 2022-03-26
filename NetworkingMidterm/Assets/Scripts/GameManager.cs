@@ -9,7 +9,7 @@ using System.Net.Sockets;
 public class GameManager : MonoBehaviour
 	{
 
-	public string username;
+	//public string username;
 
 	public int maxMessages = 25;
 
@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
 
 	Socket client1 = null;
 	byte[] buffer = new byte[512];
+
+	bool isConnected = false;
 
 	public void StartClient()
 		{
@@ -44,6 +46,7 @@ public class GameManager : MonoBehaviour
 				Debug.Log("Attempting Connection to server...");
 				client1.Connect(server);
 				Debug.Log("Connected to IP: " + client1.RemoteEndPoint.ToString());
+				isConnected = true;
 
 				// //release the resource
 				// client1.Shutdown(SocketShutdown.Both);
@@ -76,8 +79,12 @@ public class GameManager : MonoBehaviour
 			{
 			try
 				{
-				int recieved = client1.Receive(buffer);
-				Debug.Log("Recieved: " + Encoding.ASCII.GetString(buffer, 0, recieved));
+					if(isConnected)
+					{
+						int recieved = client1.Receive(buffer);
+						string message = Encoding.Default.GetString(buffer, 0, recieved);
+						SendMessageToChat(message, Message.MessageType.playerMessage);
+					}
 				}
 			catch (SocketException er)
 				{
@@ -99,11 +106,19 @@ public class GameManager : MonoBehaviour
 						{
 						try
 							{
-							string newMessage = username + ": " + chatBox.text;
-							byte[] msg = Encoding.ASCII.GetBytes(newMessage);
-							chatBox.text = "";
-							Debug.Log(newMessage);
-							client1.Send(msg);
+								if(isConnected)
+								{
+									string newMessage = chatBox.text;
+									byte[] msg = Encoding.ASCII.GetBytes(newMessage);
+									chatBox.text = "";
+									Debug.Log(newMessage);
+									client1.Send(msg);
+										if(newMessage == "quit")
+										{
+											client1.Close();
+											isConnected = false;
+										}
+								}
 							}
 						catch (SocketException er) 
 							{
@@ -119,9 +134,9 @@ public class GameManager : MonoBehaviour
 				else
 					{
 
-					if (!chatBox.isFocused && Input.GetKeyDown(KeyCode.Return))
+					if (!chatBox.isFocused && Input.GetKeyDown(KeyCode.Return) && isConnected)
 						{
-						chatBox.ActivateInputField();
+							chatBox.ActivateInputField();
 						}
 					}
 				}
