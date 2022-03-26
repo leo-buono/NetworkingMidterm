@@ -58,6 +58,7 @@ public class User
 public class TCPServer 
 {
     List<User> userList = new List<User>();
+    int playerCount = 1;
     public void StartServer() 
     {
         Console.ReadKey();
@@ -105,7 +106,7 @@ public class TCPServer
                         handler.Send(msg);
                         //Because we are only expecting two players we can get away with this naming scheme
                         handler.Blocking = false;
-                        userList.Add(new User(handler, "Player 2"));
+                        userList.Add(new User(handler, "Player " + ++playerCount));
 
                         //server.Blocking = false;
                         //UDPSocket.Blocking = false;
@@ -120,7 +121,7 @@ public class TCPServer
                 }
                 for (int i = 0; i < userList.Count; i++)
                 {
-                    UDPTCP(ref buffer, ref UDPSocket, ref userList[i].remoteEP, ref userList[i].handler, userList[i]);
+                    UDPTCP(ref buffer, ref UDPSocket, ref userList[i].remoteEP, ref userList[i].handler, userList[i],ref i);
                 }
             }
             //handler.Shutdown(SocketShutdown.Both);
@@ -135,7 +136,7 @@ public class TCPServer
     }
 
     private void UDPTCP(ref byte[] buffer, ref Socket UDPSocket,
-        ref EndPoint remoteClient, ref Socket handler, User player)
+        ref EndPoint remoteClient, ref Socket handler, User player, ref int index)
     {
         //Create a loop so that you can loop through all the users that are connected and do something about it 
         try
@@ -145,10 +146,27 @@ public class TCPServer
 
             Console.WriteLine("Recieved: {0}", Encoding.ASCII.GetString(buffer, 0, recieved));
             //It recieved a thing! Great, now send it off to both clients
-            byte[] msg = Encoding.ASCII.GetBytes(player.username + " " + recieved);
-            foreach (User t in userList)
+            string messageToSend =  Encoding.ASCII.GetString(buffer, 0, recieved);
+
+            if (messageToSend == "quit")
             {
-                t.handler.Send(msg);
+                string sendThis = player.username + " has disconnected";
+                byte[] msg = Encoding.ASCII.GetBytes(sendThis);
+                handler.Close();
+                userList.RemoveAt(index);
+                foreach (User t in userList)
+                {
+                    t.handler.Send(msg);
+                }
+            }
+            else
+            {
+                string sendThis = player.username + ": " + messageToSend;
+                byte[] msg = Encoding.ASCII.GetBytes(sendThis);
+                foreach (User t in userList)
+                {
+                    t.handler.Send(msg);
+                }
             }
         }
         catch (SocketException socke)
