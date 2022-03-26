@@ -73,7 +73,7 @@ public class textchat : MonoBehaviour
             }
             try
             {
-                string sent = " ";
+                string sent = "GAMING";
                 byte[] msg = Encoding.ASCII.GetBytes(sent);
 
                 Debug.Log("Sent: " + sent);
