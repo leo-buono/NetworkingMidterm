@@ -57,7 +57,8 @@ public class User
 }
 public class TCPServer 
 {
-    public static void StartServer() 
+    List<User> userList = new List<User>();
+    public void StartServer() 
     {
         Console.ReadKey();
         byte[] buffer = new byte[512];
@@ -71,7 +72,7 @@ public class TCPServer
         //UDP
         IPEndPoint client = new IPEndPoint(ip, 11112);
         EndPoint remoteClient = (EndPoint)client;
-        List<User> userList = new List<User>();
+
         try
         {
                 server.Bind(localEP);
@@ -112,9 +113,9 @@ public class TCPServer
                         Console.WriteLine("Socket Error");
                     }
                 }
-                foreach (User guy in userList)
+                for (int i = 0; i < userList.Count; i++)
                 {
-                    UDPTCP(ref buffer, ref UDPSocket, guy.remoteEP, guy.handler);
+                    UDPTCP(ref buffer, ref UDPSocket, userList[i].remoteEP, userList[i].handler, userList[i]);
                 }
             }
             //handler.Shutdown(SocketShutdown.Both);
@@ -128,7 +129,8 @@ public class TCPServer
             }
     }
 
-    private static void UDPTCP(ref byte[] buffer, ref Socket UDPSocket, EndPoint remoteClient, Socket handler)
+    private void UDPTCP(ref byte[] buffer, ref Socket UDPSocket,
+        EndPoint remoteClient, Socket handler, User player)
     {
 
 
@@ -139,6 +141,12 @@ public class TCPServer
             int recieved = handler.Receive(buffer);
 
             Console.WriteLine("Recieved: {0}", Encoding.ASCII.GetString(buffer, 0, recieved));
+            //It recieved a thing! Great, now send it off to both clients
+            byte[] msg = Encoding.ASCII.GetBytes(player.username + " " + recieved);
+            foreach (User t in userList)
+            {
+                t.handler.Send(msg);
+            }
         }
         catch (SocketException socke)
         {
