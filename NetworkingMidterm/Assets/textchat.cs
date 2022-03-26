@@ -8,10 +8,10 @@ using System.Net.Sockets;
 
 public class textchat : MonoBehaviour
 {
-
-     public static void StartClient() 
+    Socket client1 = null;
+    byte[] buffer = new byte[512];
+    public void StartClient() 
     {
-        byte[] buffer = new byte[512];
 
         //Setup our end point (server)
         try
@@ -22,21 +22,23 @@ public class textchat : MonoBehaviour
             IPEndPoint server = new IPEndPoint(ip, 11111);
 
             //create out client socket 
-            Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            client1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             //attempted a connection
             try
             {
                 Debug.Log("Attempting Connection to server...");
-                client.Connect(server);
-                Debug.Log("Connected to IP: " + client.RemoteEndPoint.ToString());
+                client1.Connect(server);
+                Debug.Log("Connected to IP: " + client1.RemoteEndPoint.ToString());
 
-                //release the resource
-                client.Shutdown(SocketShutdown.Both);
-                client.Close();
+                // //release the resource
+                // client1.Shutdown(SocketShutdown.Both);
+                // client1.Close();
             }
-            catch 
+            catch
             {
+
             }
+            client1.Blocking = false;
         }
         catch 
         { 
@@ -54,14 +56,52 @@ public class textchat : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-         int recieved = client.Receive(buffer);
-
+        try
+        {
+            try
+            {
+                int recieved = client1.Receive(buffer);
                 Debug.Log("Recieved: " + Encoding.ASCII.GetString(buffer, 0, recieved));
-
-                string sent = "Literally Gaming";
+            }
+            catch(SocketException er)
+            {
+                if (er.SocketErrorCode != SocketError.WouldBlock) 
+                {
+                    //write error
+                    Debug.Log("Nothing recieved");
+                }
+            }
+            try
+            {
+                string sent = " ";
                 byte[] msg = Encoding.ASCII.GetBytes(sent);
 
                 Debug.Log("Sent: " + sent);
-                client.Send(msg);
+                client1.Send(msg);
+            }
+             catch(SocketException er)
+            {
+                if (er.SocketErrorCode != SocketError.WouldBlock) 
+                {
+                    //write error
+                    Debug.Log("Nothing sent ");
+                }
+            }
+        }
+        catch (SocketException socke)
+        {
+            if (socke.SocketErrorCode != SocketError.WouldBlock) 
+            {
+              //write error
+                Debug.Log("Error");
+
+            }
+        }
+    }
+    private void OnApplicationQuit() 
+    {
+        //release the resource
+        client1.Shutdown(SocketShutdown.Both);
+        client1.Close();
     }
 }

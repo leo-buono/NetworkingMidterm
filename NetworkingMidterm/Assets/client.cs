@@ -26,7 +26,7 @@ public class client : MonoBehaviour
     public static void RunClient()
     {
         IPAddress ip = IPAddress.Parse("127.0.0.1");//192.168.2.144");
-        remoteEP = new IPEndPoint(ip, 11111);
+        remoteEP = new IPEndPoint(ip, 11112);
 
         client_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
 
