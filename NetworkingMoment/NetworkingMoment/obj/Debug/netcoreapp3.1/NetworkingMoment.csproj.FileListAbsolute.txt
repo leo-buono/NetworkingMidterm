@@ -1,0 +1,14 @@
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\bin\Debug\netcoreapp3.1\NetworkingMoment.exe
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\bin\Debug\netcoreapp3.1\NetworkingMoment.deps.json
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\bin\Debug\netcoreapp3.1\NetworkingMoment.runtimeconfig.json
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\bin\Debug\netcoreapp3.1\NetworkingMoment.runtimeconfig.dev.json
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\bin\Debug\netcoreapp3.1\NetworkingMoment.dll
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\bin\Debug\netcoreapp3.1\NetworkingMoment.pdb
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\obj\Debug\netcoreapp3.1\NetworkingMoment.csprojAssemblyReference.cache
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\obj\Debug\netcoreapp3.1\NetworkingMoment.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\obj\Debug\netcoreapp3.1\NetworkingMoment.AssemblyInfoInputs.cache
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\obj\Debug\netcoreapp3.1\NetworkingMoment.AssemblyInfo.cs
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\obj\Debug\netcoreapp3.1\NetworkingMoment.csproj.CoreCompileInputs.cache
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\obj\Debug\netcoreapp3.1\NetworkingMoment.dll
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\obj\Debug\netcoreapp3.1\NetworkingMoment.pdb
+C:\Users\Leo B\source\repos\NetworkingMoment\NetworkingMoment\obj\Debug\netcoreapp3.1\NetworkingMoment.genruntimeconfig.cache
