@@ -179,7 +179,8 @@ public class TCPServer
 
     public static int Main(String[] args) 
     {
-        StartServer();
+        TCPServer lmao = new TCPServer();
+        lmao.StartServer();
         Console.ReadKey();
         return 0;
     }

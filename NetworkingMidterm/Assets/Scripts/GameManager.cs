@@ -77,7 +77,7 @@ public class GameManager : MonoBehaviour
 			try
 				{
 				int recieved = client1.Receive(buffer);
-				//Debug.Log("Recieved: " + Encoding.ASCII.GetString(buffer, 0, recieved));
+				Debug.Log("Recieved: " + Encoding.ASCII.GetString(buffer, 0, recieved));
 				}
 			catch (SocketException er)
 				{
@@ -97,12 +97,22 @@ public class GameManager : MonoBehaviour
 
 					if (Input.GetKeyDown(KeyCode.Return))
 						{
-
-						string newMessage = username + ": " + chatBox.text;
-						byte[] msg = Encoding.ASCII.GetBytes(newMessage);
-						chatBox.text = "";
-						Debug.Log(newMessage);
-						client1.Send(msg);
+						try
+							{
+							string newMessage = username + ": " + chatBox.text;
+							byte[] msg = Encoding.ASCII.GetBytes(newMessage);
+							chatBox.text = "";
+							Debug.Log(newMessage);
+							client1.Send(msg);
+							}
+						catch (SocketException er) 
+							{
+								if (er.SocketErrorCode != SocketError.WouldBlock)
+								{
+									//write error
+									Debug.Log("Nothing sent ");
+								}
+							}
 						}
 
 					}

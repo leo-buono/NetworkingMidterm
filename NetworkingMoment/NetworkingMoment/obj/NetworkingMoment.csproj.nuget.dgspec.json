@@ -1,20 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Leo B\\Documents\\GitHub\\NetworkingMidterm\\NetworkingMoment\\NetworkingMoment\\NetworkingMoment.csproj": {}
+    "C:\\Users\\jcnar\\Documents\\Github\\NetworkingMidterm\\NetworkingMoment\\NetworkingMoment\\NetworkingMoment.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Leo B\\Documents\\GitHub\\NetworkingMidterm\\NetworkingMoment\\NetworkingMoment\\NetworkingMoment.csproj": {
+    "C:\\Users\\jcnar\\Documents\\Github\\NetworkingMidterm\\NetworkingMoment\\NetworkingMoment\\NetworkingMoment.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Leo B\\Documents\\GitHub\\NetworkingMidterm\\NetworkingMoment\\NetworkingMoment\\NetworkingMoment.csproj",
+        "projectUniqueName": "C:\\Users\\jcnar\\Documents\\Github\\NetworkingMidterm\\NetworkingMoment\\NetworkingMoment\\NetworkingMoment.csproj",
         "projectName": "NetworkingMoment",
-        "projectPath": "C:\\Users\\Leo B\\Documents\\GitHub\\NetworkingMidterm\\NetworkingMoment\\NetworkingMoment\\NetworkingMoment.csproj",
-        "packagesPath": "C:\\Users\\Leo B\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Leo B\\Documents\\GitHub\\NetworkingMidterm\\NetworkingMoment\\NetworkingMoment\\obj\\",
+        "projectPath": "C:\\Users\\jcnar\\Documents\\Github\\NetworkingMidterm\\NetworkingMoment\\NetworkingMoment\\NetworkingMoment.csproj",
+        "packagesPath": "C:\\Users\\jcnar\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\jcnar\\Documents\\Github\\NetworkingMidterm\\NetworkingMoment\\NetworkingMoment\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
         "configFilePaths": [
-          "C:\\Users\\Leo B\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jcnar\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -49,18 +53,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[3.1.19, 3.1.19]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.404\\RuntimeIdentifierGraph.json"
         }
       }
     }
