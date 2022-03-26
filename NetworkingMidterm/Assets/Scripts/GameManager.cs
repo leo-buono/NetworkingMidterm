@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Text;
+using System.Net;
+using System.Net.Sockets;
 
 public class GameManager : MonoBehaviour
 	{
@@ -19,41 +22,125 @@ public class GameManager : MonoBehaviour
 	[SerializeField]
 	List<Message> messageList = new List<Message>();
 
+	Socket client1 = null;
+	byte[] buffer = new byte[512];
+
+	public void StartClient()
+		{
+
+		//Setup our end point (server)
+		try
+			{
+			//IPAddress ip = Dns.GetHostAddresses("mail.bigpond.com")[0];
+			//you got to do this lol
+			IPAddress ip = IPAddress.Parse("127.0.0.1");
+			IPEndPoint server = new IPEndPoint(ip, 11111);
+
+			//create out client socket 
+			client1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			//attempted a connection
+			try
+				{
+				Debug.Log("Attempting Connection to server...");
+				client1.Connect(server);
+				Debug.Log("Connected to IP: " + client1.RemoteEndPoint.ToString());
+
+				// //release the resource
+				// client1.Shutdown(SocketShutdown.Both);
+				// client1.Close();
+				}
+			catch
+				{
+
+				}
+			client1.Blocking = false;
+			}
+		catch
+			{
+
+			}
+
+		}
+
 	// Start is called before the first frame update
 	void Start()
 		{
-
+		StartClient();
 		}
 
 	// Update is called once per frame
 	void Update()
 		{
 
-		if (chatBox.text != "")
+		try
 			{
-
-			if (Input.GetKeyDown(KeyCode.Return))
+			try
 				{
-				SendMessageToChat(username + ": " + chatBox.text, Message.MessageType.playerMessage);
-				chatBox.text = "";
+				int recieved = client1.Receive(buffer);
+				Debug.Log("Recieved: " + Encoding.ASCII.GetString(buffer, 0, recieved));
 				}
-
-			}
-		else
-			{
-
-			if (!chatBox.isFocused && Input.GetKeyDown(KeyCode.Return))
+			catch (SocketException er)
 				{
-				chatBox.ActivateInputField();
+				if (er.SocketErrorCode != SocketError.WouldBlock)
+					{
+					//write error
+					//Debug.Log("Nothing recieved");
+					}
+				}
+			try
+				{
+
+				
+
+				if (chatBox.text != "")
+					{
+
+					if (Input.GetKeyDown(KeyCode.Return))
+						{
+						try
+							{
+							string newMessage = username + ": " + chatBox.text;
+							byte[] msg = Encoding.ASCII.GetBytes(newMessage);
+							chatBox.text = "";
+							Debug.Log(newMessage);
+							client1.Send(msg);
+							}
+						catch (SocketException er) 
+							{
+								if (er.SocketErrorCode != SocketError.WouldBlock)
+								{
+									//write error
+									Debug.Log("Nothing sent ");
+								}
+							}
+						}
+
+					}
+				else
+					{
+
+					if (!chatBox.isFocused && Input.GetKeyDown(KeyCode.Return))
+						{
+						chatBox.ActivateInputField();
+						}
+					}
+				}
+			catch (SocketException er)
+				{
+				if (er.SocketErrorCode != SocketError.WouldBlock)
+					{
+					//write error
+					//Debug.Log("Nothing sent ");
+					}
 				}
 			}
-
-		if (!chatBox.isFocused)
+		catch (SocketException socke)
 			{
-			if (Input.GetKeyDown(KeyCode.Space))
+			if (socke.SocketErrorCode != SocketError.WouldBlock)
 				{
-				SendMessageToChat("You pressed the space key", Message.MessageType.info);
-				Debug.Log("Space");
+				//write error
+				//Debug.Log("Error");
+
 				}
 			}
 		}
@@ -117,6 +204,13 @@ public class GameManager : MonoBehaviour
 			info
 			}
 
+		}
+
+	private void OnApplicationQuit()
+		{
+		//release the resource
+		client1.Shutdown(SocketShutdown.Both);
+		client1.Close();
 		}
 
 
