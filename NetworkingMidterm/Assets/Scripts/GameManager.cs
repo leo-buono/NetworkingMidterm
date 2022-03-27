@@ -224,8 +224,11 @@ public class GameManager : MonoBehaviour
 	private void OnApplicationQuit()
 		{
 		//release the resource
-		client1.Shutdown(SocketShutdown.Both);
-		client1.Close();
+		if(isConnected)
+		{
+			client1.Shutdown(SocketShutdown.Both);
+			client1.Close();
+		}
 		}
 
 
