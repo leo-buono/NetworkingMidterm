@@ -26,6 +26,7 @@ public class GameManager : MonoBehaviour
 	byte[] buffer = new byte[512];
 
 	bool isConnected = false;
+	public static int newUdpPort = 0;
 
 	public void StartClient()
 		{
@@ -83,7 +84,20 @@ public class GameManager : MonoBehaviour
 					{
 						int recieved = client1.Receive(buffer);
 						string message = Encoding.Default.GetString(buffer, 0, recieved);
+						if(message[0] == 'p' && message[1] == 'o' && message[2] == 'r' && message[3] == 't')
+						{
+							string portString = "";
+							for (int i = 4; i < message.Length; i++)
+							{
+								//Get the port data into the thing
+								portString += message[i];
+								Debug.Log(portString);
+							}
+							newUdpPort = int.Parse(portString);
+						}
+						else{
 						SendMessageToChat(message, Message.MessageType.playerMessage);
+						}
 					}
 				}
 			catch (SocketException er)

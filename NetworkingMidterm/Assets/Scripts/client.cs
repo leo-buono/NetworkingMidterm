@@ -23,13 +23,16 @@ public class client : MonoBehaviour
     float[] prevPos = new float[3];
     private byte[] bpos;
 
+    bool portAssigned = false;
+
+    public static IPAddress ip;
     public static void RunClient()
     {
-        IPAddress ip = IPAddress.Parse("127.0.0.1");//192.168.2.144");
+        ip = IPAddress.Parse("127.0.0.1");//192.168.2.144");
         remoteEP = new IPEndPoint(ip, 11112);
 
         client_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
+        client_socket.Blocking = false;
     }
 
     // Start is called before the first frame update
@@ -48,6 +51,15 @@ public class client : MonoBehaviour
 
     }
 
+    private void Update() 
+    {
+        if(GameManager.newUdpPort != 0 && !portAssigned)
+        {
+            //assign the port
+            remoteEP = new IPEndPoint(ip, GameManager.newUdpPort);
+
+        }
+    }
     // Update is called once per frame
     // void Update()
     // {

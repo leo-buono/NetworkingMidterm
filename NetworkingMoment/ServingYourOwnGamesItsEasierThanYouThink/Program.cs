@@ -87,8 +87,8 @@ public class TCPServer
                 IPEndPoint clientEP = (IPEndPoint)handler.RemoteEndPoint;
                 Console.WriteLine("Client {0} connected at port {1}", clientEP.Address, clientEP.Port);
                 handler.Blocking = false;
-                IPEndPoint remoteIP = (IPEndPoint)server.RemoteEndPoint;
-                IPEndPoint newPort = new IPEndPoint(remoteIP.Address, 11113);
+                //IPEndPoint remoteIP = (IPEndPoint)server.RemoteEndPoint;
+                IPEndPoint newPort = new IPEndPoint(ip, 11113);
                 userList.Add(new User(handler, "Player 1", newPort));
 
                 //Give the new UDP port
@@ -115,9 +115,10 @@ public class TCPServer
                         handler.Send(msg);
                         //Because we are only expecting two players we can get away with this naming scheme
                         handler.Blocking = false;
-                        remoteIP = (IPEndPoint)server.RemoteEndPoint;
-                        newPort = new IPEndPoint(remoteIP.Address, 11114);
+                        //remoteIP = (IPEndPoint)server.RemoteEndPoint;
+                        newPort = new IPEndPoint(ip, 11114);
 
+                        //You didn't set up the port properly 
                         userList.Add(new User(handler, "Player " + ++playerCount, newPort));
                         sendInfo = "port" + newPort.Port.ToString();
                         msg = Encoding.ASCII.GetBytes(sendInfo);
@@ -137,7 +138,8 @@ public class TCPServer
                 }
                 for (int i = 0; i < userList.Count; i++)
                 {
-                    UDPTCP(ref buffer, ref UDPSocket, ref userList[i].remoteEP, ref userList[i].handler, userList[i],ref i);
+                    UDPTCP(ref buffer, ref UDPSocket, 
+                        ref userList[i].remoteEP, ref userList[i].handler, userList[i],ref i);
                 }
             }
             //handler.Shutdown(SocketShutdown.Both);
@@ -146,7 +148,7 @@ public class TCPServer
             {
                 if (sockeet.SocketErrorCode != SocketError.WouldBlock)
                 {
-                    Console.WriteLine("Error");
+                    Console.WriteLine(sockeet.ToString());
                 }
             }
     }
@@ -198,7 +200,9 @@ public class TCPServer
         try
         {
             //decode and then reencode I don't want to mess with converting byte arrays and stuff
-            int rec = UDPSocket.ReceiveFrom(buffer, ref remoteClient);
+            EndPoint remote = new IPEndPoint(IPAddress.Any, 0);
+            int rec = UDPSocket.ReceiveFrom(buffer, ref remote);
+            Console.WriteLine("Gottem");
             float[] pos = new float[rec / 4];
             byte[] bpos = new byte[pos.Length * 4];
             Buffer.BlockCopy(buffer, 0, pos, 0, rec);
@@ -207,17 +211,19 @@ public class TCPServer
             if (rec != 0)
             {
                 //send the data back to the other computer
-
-                //Identify who sent it
-                if (((IPEndPoint)remoteClient).Port == userList[0].udpEndpoint.Port)
+                if (userList.Count > 1) 
                 {
-                    //Player 1 sent it
-                    UDPSocket.SendTo(bpos, userList[1].remoteEP);
-                }
-                else if (((IPEndPoint)remoteClient).Port == userList[1].udpEndpoint.Port) 
-                {
-                    //player 2 sent it
-                    UDPSocket.SendTo(bpos, userList[0].remoteEP);
+                    //Identify who sent it
+                    if (((IPEndPoint)remoteClient).Port == userList[0].udpEndpoint.Port)
+                    {
+                        //Player 1 sent it
+                        UDPSocket.SendTo(bpos, userList[1].remoteEP);
+                    }
+                    else if (((IPEndPoint)remoteClient).Port == userList[1].udpEndpoint.Port)
+                    {
+                        //player 2 sent it
+                        UDPSocket.SendTo(bpos, userList[0].remoteEP);
+                    }
                 }
             }
         }
