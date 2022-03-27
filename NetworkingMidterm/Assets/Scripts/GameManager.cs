@@ -13,9 +13,10 @@ public class GameManager : MonoBehaviour
 
 	public int maxMessages = 25;
 
-	public GameObject chatPanel, textObject;
-	public InputField chatBox;
+	public GameObject chatPanel, textObject, BeforeConnectionUI, AfterConnectionUI;
+	public InputField chatBox, ipAddressBox;
 
+	public static IPAddress ip;
 
 	public Color playerMessage, Info;
 
@@ -25,125 +26,143 @@ public class GameManager : MonoBehaviour
 	Socket client1 = null;
 	byte[] buffer = new byte[512];
 
+	public static bool isConnected= false;
+
 	public void StartClient()
 		{
 
-		//Setup our end point (server)
+		//Show server input UI
+
 		try
 			{
-			//IPAddress ip = Dns.GetHostAddresses("mail.bigpond.com")[0];
-			//you got to do this lol
-			IPAddress ip = IPAddress.Parse("127.0.0.1");
-			IPEndPoint server = new IPEndPoint(ip, 11111);
 
-			//create out client socket 
-			client1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			//attempted a connection
-			try
-				{
-				Debug.Log("Attempting Connection to server...");
-				client1.Connect(server);
-				Debug.Log("Connected to IP: " + client1.RemoteEndPoint.ToString());
-
-				// //release the resource
-				// client1.Shutdown(SocketShutdown.Both);
-				// client1.Close();
-				}
-			catch
+			//If they are inputting something 
+			if (ipAddressBox.text != "")
 				{
 
+					Debug.Log("hey there bucko");
+					string ipAddress = chatBox.text;
+					IPAddress ip = IPAddress.Parse(ipAddress);
+					IPEndPoint server = new IPEndPoint(ip, 11111);
+
+					//create out client socket 
+					client1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+					//attempted a connection
+
+					Debug.Log("Attempting Connection to server...");
+					client1.Connect(server);
+					Debug.Log("Connected to IP: " + client1.RemoteEndPoint.ToString());
+					client1.Blocking = false;
+						// //release the resource
+						// client1.Shutdown(SocketShutdown.Both);
+						// client1.Close();
+
+					BeforeConnectionUI.SetActive(false);
+					AfterConnectionUI.SetActive(true);
+					isConnected = true;
+					}
+
+				else
+					{
+					if (!ipAddressBox.isFocused)
+						{
+						ipAddressBox.ActivateInputField();
+						}
+					}
 				}
-			client1.Blocking = false;
-			}
 		catch
 			{
-
+			Debug.Log("Invalid IP address");
+			ipAddressBox.text = "";
 			}
-
 		}
 
 	// Start is called before the first frame update
 	void Start()
 		{
-		StartClient();
+
+		BeforeConnectionUI.SetActive(true);
+		AfterConnectionUI.SetActive(false);
+
 		}
 
 	// Update is called once per frame
 	void Update()
 		{
 
-		try
-			{
+		if (isConnected == true)
+
 			try
 				{
-				int recieved = client1.Receive(buffer);
-				Debug.Log("Recieved: " + Encoding.ASCII.GetString(buffer, 0, recieved));
-				}
-			catch (SocketException er)
-				{
-				if (er.SocketErrorCode != SocketError.WouldBlock)
+				try
 					{
-					//write error
-					//Debug.Log("Nothing recieved");
+					int recieved = client1.Receive(buffer);
+					Debug.Log("Recieved: " + Encoding.ASCII.GetString(buffer, 0, recieved));
 					}
-				}
-			try
-				{
-
-				
-
-				if (chatBox.text != "")
+				catch (SocketException er)
 					{
-
-					if (Input.GetKeyDown(KeyCode.Return))
+					if (er.SocketErrorCode != SocketError.WouldBlock)
 						{
-						try
+						//write error
+						//Debug.Log("Nothing recieved");
+						}
+					}
+				try
+					{
+					if (chatBox.text != "")
+						{
+
+						if (Input.GetKeyDown(KeyCode.Return))
 							{
-							string newMessage = username + ": " + chatBox.text;
-							byte[] msg = Encoding.ASCII.GetBytes(newMessage);
-							chatBox.text = "";
-							Debug.Log(newMessage);
-							client1.Send(msg);
-							}
-						catch (SocketException er) 
-							{
-								if (er.SocketErrorCode != SocketError.WouldBlock)
+							try
 								{
+								string newMessage = username + ": " + chatBox.text;
+								byte[] msg = Encoding.ASCII.GetBytes(newMessage);
+								chatBox.text = "";
+								Debug.Log(newMessage);
+								client1.Send(msg);
+								}
+							catch (SocketException er)
+								{
+								if (er.SocketErrorCode != SocketError.WouldBlock)
+									{
 									//write error
 									Debug.Log("Nothing sent ");
+									}
 								}
 							}
+
 						}
-
-					}
-				else
-					{
-
-					if (!chatBox.isFocused && Input.GetKeyDown(KeyCode.Return))
+					else
 						{
-						chatBox.ActivateInputField();
+
+						if (!chatBox.isFocused && Input.GetKeyDown(KeyCode.Return))
+							{
+							chatBox.ActivateInputField();
+							}
+						}
+					}
+				catch (SocketException er)
+					{
+					if (er.SocketErrorCode != SocketError.WouldBlock)
+						{
+						//write error
+						//Debug.Log("Nothing sent ");
 						}
 					}
 				}
-			catch (SocketException er)
+			catch (SocketException socke)
 				{
-				if (er.SocketErrorCode != SocketError.WouldBlock)
+				if (socke.SocketErrorCode != SocketError.WouldBlock)
 					{
 					//write error
-					//Debug.Log("Nothing sent ");
+					//Debug.Log("Error");
+
 					}
 				}
 			}
-		catch (SocketException socke)
-			{
-			if (socke.SocketErrorCode != SocketError.WouldBlock)
-				{
-				//write error
-				//Debug.Log("Error");
-
-				}
-			}
-		}
+		
 
 	public void SendMessageToChat(string text, Message.MessageType messageType)
 		{
@@ -166,7 +185,7 @@ public class GameManager : MonoBehaviour
 		newMessage.textObject = newText.GetComponent<Text>();
 
 		newMessage.textObject.text = newMessage.text;
-		
+
 		newMessage.textObject.color = MessageTypeColor(messageType);
 
 		messageList.Add(newMessage);
