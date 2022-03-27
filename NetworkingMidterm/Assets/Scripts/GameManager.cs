@@ -16,7 +16,6 @@ public class GameManager : MonoBehaviour
 	public GameObject chatPanel, textObject, BeforeConnectionUI, AfterConnectionUI;
 	public InputField chatBox, ipAddressBox;
 
-	public static IPAddress ip;
 
 	public Color playerMessage, Info;
 
@@ -27,6 +26,7 @@ public class GameManager : MonoBehaviour
 	byte[] buffer = new byte[512];
 
 	public static bool isConnected= false;
+	public static IPAddress ip;
 
 	public void StartClient()
 		{
@@ -41,8 +41,10 @@ public class GameManager : MonoBehaviour
 				{
 
 					Debug.Log("hey there bucko");
-					string ipAddress = chatBox.text;
-					IPAddress ip = IPAddress.Parse(ipAddress);
+					string ipAddress = ipAddressBox.text.TrimEnd(' ');
+					//string ipAddress = "127.0.0.1";
+					Debug.Log(ipAddress);
+					ip = IPAddress.Parse(ipAddress);
 					IPEndPoint server = new IPEndPoint(ip, 11111);
 
 					//create out client socket 

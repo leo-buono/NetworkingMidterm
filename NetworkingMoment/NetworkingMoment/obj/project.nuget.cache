@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "JlzElM4v9IOfOge0K/oiNnf08DE7JhMmx0vvm1mnn8CehrOjtf0ipACgXCoRE28GM4ufh5eW0BbhJLfStztDhQ==",
+  "dgSpecHash": "jdkHc6GsneQU0CqNhHaNtMstUV8GAWqTI295/JhghMl8HBm6IisR8Vk6HAF8k547qFUh4CHiudokyQj93RW/Gg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\jcnar\\Documents\\Github\\NetworkingMidterm\\NetworkingMoment\\NetworkingMoment\\NetworkingMoment.csproj",
-  "expectedPackageFiles": [],
+  "projectFilePath": "C:\\Users\\Leo B\\Documents\\GitHub\\NetworkingMidterm\\NetworkingMoment\\NetworkingMoment\\NetworkingMoment.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Leo B\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.19\\microsoft.netcore.app.host.win-x64.3.1.19.nupkg.sha512"
+  ],
   "logs": []
 }

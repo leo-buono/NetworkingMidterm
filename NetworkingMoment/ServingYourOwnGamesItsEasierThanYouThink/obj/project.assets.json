@@ -8,24 +8,19 @@
     ".NETCoreApp,Version=v3.1": []
   },
   "packageFolders": {
-    "C:\\Users\\jcnar\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\Leo B\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\jcnar\\Documents\\Github\\NetworkingMidterm\\NetworkingMoment\\ServingYourOwnGamesItsEasierThanYouThink\\ServingYourOwnGamesItsEasierThanYouThink.csproj",
+      "projectUniqueName": "C:\\Users\\Leo B\\Documents\\GitHub\\NetworkingMidterm\\NetworkingMoment\\ServingYourOwnGamesItsEasierThanYouThink\\ServingYourOwnGamesItsEasierThanYouThink.csproj",
       "projectName": "ServingYourOwnGamesItsEasierThanYouThink",
-      "projectPath": "C:\\Users\\jcnar\\Documents\\Github\\NetworkingMidterm\\NetworkingMoment\\ServingYourOwnGamesItsEasierThanYouThink\\ServingYourOwnGamesItsEasierThanYouThink.csproj",
-      "packagesPath": "C:\\Users\\jcnar\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\jcnar\\Documents\\Github\\NetworkingMidterm\\NetworkingMoment\\ServingYourOwnGamesItsEasierThanYouThink\\obj\\",
+      "projectPath": "C:\\Users\\Leo B\\Documents\\GitHub\\NetworkingMidterm\\NetworkingMoment\\ServingYourOwnGamesItsEasierThanYouThink\\ServingYourOwnGamesItsEasierThanYouThink.csproj",
+      "packagesPath": "C:\\Users\\Leo B\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Leo B\\Documents\\GitHub\\NetworkingMidterm\\NetworkingMoment\\ServingYourOwnGamesItsEasierThanYouThink\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\jcnar\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\Leo B\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -60,12 +55,18 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[3.1.19, 3.1.19]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.404\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.401\\RuntimeIdentifierGraph.json"
       }
     }
   }
