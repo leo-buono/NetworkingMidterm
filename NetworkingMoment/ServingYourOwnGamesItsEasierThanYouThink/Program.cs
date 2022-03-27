@@ -203,6 +203,8 @@ public class TCPServer
             EndPoint remote = new IPEndPoint(IPAddress.Any, 0);
             int rec = UDPSocket.ReceiveFrom(buffer, ref remote);
             Console.WriteLine("Gottem");
+            //Decoding
+
             float[] pos = new float[rec / 4];
             byte[] bpos = new byte[pos.Length * 4];
             Buffer.BlockCopy(buffer, 0, pos, 0, rec);
@@ -214,12 +216,12 @@ public class TCPServer
                 if (userList.Count > 1) 
                 {
                     //Identify who sent it
-                    if (((IPEndPoint)remoteClient).Port == userList[0].udpEndpoint.Port)
+                    if (((IPEndPoint)remote).Port == userList[0].udpEndpoint.Port)
                     {
                         //Player 1 sent it
                         UDPSocket.SendTo(bpos, userList[1].remoteEP);
                     }
-                    else if (((IPEndPoint)remoteClient).Port == userList[1].udpEndpoint.Port)
+                    else if (((IPEndPoint)remote).Port == userList[1].udpEndpoint.Port)
                     {
                         //player 2 sent it
                         UDPSocket.SendTo(bpos, userList[0].remoteEP);

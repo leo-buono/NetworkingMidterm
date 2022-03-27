@@ -13,6 +13,7 @@ public class client : MonoBehaviour
 {
 
     public GameObject myCube;
+    public GameObject otherCube;
 
     private static byte[] outBuffer = new byte[512];
     private static IPEndPoint remoteEP;
@@ -38,7 +39,7 @@ public class client : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        myCube = GameObject.Find("Cube");
+        //This must be changed
 
         RunClient();
 
@@ -81,6 +82,25 @@ public class client : MonoBehaviour
                 Buffer.BlockCopy(pos, 0, bpos, 0, bpos.Length);
                 client_socket.SendTo(bpos, remoteEP);
             }
+            //Attempting to get data from the server
+            try
+            {
+                byte[] buffer = new byte[512];
+                EndPoint remote = new IPEndPoint(IPAddress.Any, 0);
+                int rec = client_socket.ReceiveFrom(buffer, ref remote);
+                pos = new float[rec / 4];
+                Buffer.BlockCopy(buffer, 0, pos, 0, rec);
+                otherCube.transform.position = new Vector3(pos[0], pos[1], pos[2]);
+            }
+			catch (SocketException er)
+			{
+				if (er.SocketErrorCode != SocketError.WouldBlock)
+				{
+					//write error
+					//Debug.Log("Nothing recieved");
+				}
+            }
+
             yield return new WaitForSeconds(0.01f);
         }
     }
