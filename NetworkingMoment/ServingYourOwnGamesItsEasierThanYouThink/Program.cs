@@ -47,12 +47,14 @@ public class User
     public Socket handler;
     public EndPoint remoteEP;
     public string username;
+    public IPEndPoint udpEndpoint;
 
-    public User(Socket handler, string username)
+    public User(Socket handler, string username, IPEndPoint udpStuff)
     {
         this.handler = handler;
         this.remoteEP = (EndPoint)handler.RemoteEndPoint;
         this.username = username;
+        this.udpEndpoint = udpStuff;
     }
 }
 public class TCPServer 
@@ -85,7 +87,14 @@ public class TCPServer
                 IPEndPoint clientEP = (IPEndPoint)handler.RemoteEndPoint;
                 Console.WriteLine("Client {0} connected at port {1}", clientEP.Address, clientEP.Port);
                 handler.Blocking = false;
-                userList.Add(new User(handler, "Player 1"));
+                IPEndPoint remoteIP = (IPEndPoint)server.RemoteEndPoint;
+                IPEndPoint newPort = new IPEndPoint(remoteIP.Address, 11113);
+                userList.Add(new User(handler, "Player 1", newPort));
+
+                //Give the new UDP port
+                string sendInfo = "port" + newPort.Port.ToString();
+                byte[] msg = Encoding.ASCII.GetBytes(sendInfo);
+                handler.Send(msg);
 
             server.Blocking = false;
             UDPSocket.Blocking = false;
@@ -102,11 +111,18 @@ public class TCPServer
                         clientEP = (IPEndPoint)handler.RemoteEndPoint;
                         Console.WriteLine("Client {0} connected at port {1}", clientEP.Address, clientEP.Port);
                         //send data 
-                        byte[] msg = Encoding.ASCII.GetBytes("Accepted");
+                        msg = Encoding.ASCII.GetBytes("Accepted");
                         handler.Send(msg);
                         //Because we are only expecting two players we can get away with this naming scheme
                         handler.Blocking = false;
-                        userList.Add(new User(handler, "Player " + ++playerCount));
+                        remoteIP = (IPEndPoint)server.RemoteEndPoint;
+                        newPort = new IPEndPoint(remoteIP.Address, 11114);
+
+                        userList.Add(new User(handler, "Player " + ++playerCount, newPort));
+                        sendInfo = "port" + newPort.Port.ToString();
+                        msg = Encoding.ASCII.GetBytes(sendInfo);
+                        handler.Send(msg);
+
 
                         //server.Blocking = false;
                         //UDPSocket.Blocking = false;
@@ -181,12 +197,28 @@ public class TCPServer
         buffer = new byte[512];
         try
         {
+            //decode and then reencode I don't want to mess with converting byte arrays and stuff
             int rec = UDPSocket.ReceiveFrom(buffer, ref remoteClient);
+            float[] pos = new float[rec / 4];
+            byte[] bpos = new byte[pos.Length * 4];
+            Buffer.BlockCopy(buffer, 0, pos, 0, rec);
+            Buffer.BlockCopy(pos, 0, bpos, 0, bpos.Length);
+
             if (rec != 0)
             {
                 //send the data back to the other computer
 
-
+                //Identify who sent it
+                if (((IPEndPoint)remoteClient).Port == userList[0].udpEndpoint.Port)
+                {
+                    //Player 1 sent it
+                    UDPSocket.SendTo(bpos, userList[1].remoteEP);
+                }
+                else if (((IPEndPoint)remoteClient).Port == userList[1].udpEndpoint.Port) 
+                {
+                    //player 2 sent it
+                    UDPSocket.SendTo(bpos, userList[0].remoteEP);
+                }
             }
         }
         catch (SocketException socke)
