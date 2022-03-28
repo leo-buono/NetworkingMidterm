@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
 			IPEndPoint server = new IPEndPoint(ip, 11111);
 
 			//create out client socket 
-			client1 = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			client1 = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
 			//attempted a connection
 			try
 				{
