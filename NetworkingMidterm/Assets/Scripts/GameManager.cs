@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
 							{
 								//Get the port data into the thing
 								portString += message[i];
-								Debug.Log(portString);
+								//Debug.Log(portString);
 							}
 							newUdpPort = int.Parse(portString);
 						}
@@ -238,6 +238,9 @@ public class GameManager : MonoBehaviour
 	private void OnApplicationQuit()
 		{
 		//release the resource
+		string sent = "quit";
+        byte[] msg = Encoding.ASCII.GetBytes(sent);
+		client1.Send(msg);
 		client1.Shutdown(SocketShutdown.Both);
 		client1.Close();
 		}
