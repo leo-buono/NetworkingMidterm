@@ -13,8 +13,8 @@ public class GameManager : MonoBehaviour
 
 	public int maxMessages = 25;
 
-	public GameObject chatPanel, textObject;
-	public InputField chatBox;
+	public GameObject chatPanel, textObject, BeforeConnectionUI, AfterConnectionUI;
+	public InputField chatBox, ipAddressBox;
 
 
 	public Color playerMessage, Info;
@@ -25,7 +25,8 @@ public class GameManager : MonoBehaviour
 	Socket client1 = null;
 	byte[] buffer = new byte[512];
 
-	bool isConnected = false;
+	public static bool isConnected = false;
+	public static IPAddress ip;
 	public static int newUdpPort = 0;
 
 	public void StartClient()
@@ -34,34 +35,54 @@ public class GameManager : MonoBehaviour
 		//Setup our end point (server)
 		try
 			{
-			//IPAddress ip = Dns.GetHostAddresses("mail.bigpond.com")[0];
-			//you got to do this lol
-			IPAddress ip = IPAddress.Parse("127.0.0.1");
-			IPEndPoint server = new IPEndPoint(ip, 11111);
 
-			//create out client socket 
-			client1 = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
-			//attempted a connection
-			try
-				{
-				Debug.Log("Attempting Connection to server...");
-				client1.Connect(server);
-				Debug.Log("Connected to IP: " + client1.RemoteEndPoint.ToString());
-				isConnected = true;
-
-				// //release the resource
-				// client1.Shutdown(SocketShutdown.Both);
-				// client1.Close();
-				}
-			catch
+			if (ipAddressBox.text != "")
 				{
 
+				Debug.Log("hey there bucko");
+				string ipAddress = ipAddressBox.text.TrimEnd(' ');
+
+				//IPAddress ip = Dns.GetHostAddresses("mail.bigpond.com")[0];
+				//you got to do this lol
+				ip = IPAddress.Parse(ipAddress);
+				IPEndPoint server = new IPEndPoint(ip, 11111);
+
+				//create out client socket 
+				client1 = new Socket(ip.AddressFamily, SocketType.Stream, ProtocolType.Tcp);
+				//attempted a connection
+				try
+					{
+					Debug.Log("Attempting Connection to server...");
+					client1.Connect(server);
+					Debug.Log("Connected to IP: " + client1.RemoteEndPoint.ToString());
+					isConnected = true;
+
+					// //release the resource
+					// client1.Shutdown(SocketShutdown.Both);
+					// client1.Close();
+					}
+				catch
+					{
+
+					}
+
+				ipAddressBox.text = "";
+				BeforeConnectionUI.SetActive(false);
+				AfterConnectionUI.SetActive(true);
+				client1.Blocking = false;
 				}
-			client1.Blocking = false;
+			else
+				{
+				if (!ipAddressBox.isFocused)
+					{
+					ipAddressBox.ActivateInputField();
+					}
+				}
 			}
 		catch
 			{
-
+			Debug.Log("Invalid IP address");
+			ipAddressBox.text = "";
 			}
 
 		}
@@ -69,7 +90,8 @@ public class GameManager : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 		{
-		StartClient();
+		BeforeConnectionUI.SetActive(true);
+		AfterConnectionUI.SetActive(false);
 		}
 
 	// Update is called once per frame
