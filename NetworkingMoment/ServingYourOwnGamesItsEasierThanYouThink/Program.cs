@@ -63,7 +63,7 @@ public class TCPServer
     int playerCount = 1;
     public void StartServer() 
     {
-        Console.ReadKey();
+       // Console.ReadKey();
         byte[] buffer = new byte[512];
         IPHostEntry hostInfo = Dns.GetHostEntry(Dns.GetHostName()); 
         IPAddress ip = IPAddress.Parse("127.0.0.1");
@@ -111,8 +111,8 @@ public class TCPServer
                         clientEP = (IPEndPoint)handler.RemoteEndPoint;
                         Console.WriteLine("Client {0} connected at port {1}", clientEP.Address, clientEP.Port);
                         //send data 
-                        msg = Encoding.ASCII.GetBytes("Accepted");
-                        handler.Send(msg);
+                        //msg = Encoding.ASCII.GetBytes("Accepted");
+                        //handler.Send(msg);
                         //Because we are only expecting two players we can get away with this naming scheme
                         handler.Blocking = false;
                         //remoteIP = (IPEndPoint)server.RemoteEndPoint;
@@ -141,6 +141,54 @@ public class TCPServer
                     UDPTCP(ref buffer, ref UDPSocket, 
                         ref userList[i].remoteEP, ref userList[i].handler, userList[i],ref i);
                 }
+
+
+                //UDP
+                //Clean the buffer so there is no garbage 
+                buffer = new byte[512];
+                try
+                {
+                    //decode and then reencode I don't want to mess with converting byte arrays and stuff
+                    int rec = UDPSocket.ReceiveFrom(buffer, ref remote);
+                    IPEndPoint version = (IPEndPoint)remote;
+
+                    remote = new IPEndPoint(IPAddress.Any, 0);
+                    //Console.WriteLine("Gottem");
+                    //Decoding
+
+                    float[] pos = new float[rec / 4];
+                    byte[] bpos = new byte[pos.Length * 4];
+                    Buffer.BlockCopy(buffer, 0, pos, 0, rec);
+                    Buffer.BlockCopy(pos, 0, bpos, 0, bpos.Length);
+
+                    if (rec != 0)
+                    {
+                        //send the data back to the other computer
+                        if (userList.Count > 1)
+                        {
+                            //Identify who sent it
+                            if (version.Port == userList[0].udpEndpoint.Port)
+                            {
+                                //Player 1 sent it
+                                UDPSocket.SendTo(bpos, userList[1].udpEndpoint);
+                                Console.WriteLine("sent to p2");
+                            }
+                            else if (version.Port == userList[1].udpEndpoint.Port)
+                            {
+                                //player 2 sent it
+                                UDPSocket.SendTo(bpos, userList[0].udpEndpoint);
+                                Console.WriteLine("sent to p1");
+                            }
+                        }
+                    }
+                }
+                catch (SocketException socke)
+                {
+                    if (socke.SocketErrorCode != SocketError.WouldBlock)
+                    {
+                        Console.WriteLine(socke.ToString());
+                    }
+                }
             }
             //handler.Shutdown(SocketShutdown.Both);
         }
@@ -153,6 +201,7 @@ public class TCPServer
             }
     }
 
+    EndPoint remote = new IPEndPoint(IPAddress.Any, 0);
     private void UDPTCP(ref byte[] buffer, ref Socket UDPSocket,
         ref EndPoint remoteClient, ref Socket handler, User player, ref int index)
     {
@@ -184,48 +233,6 @@ public class TCPServer
                 foreach (User t in userList)
                 {
                     t.handler.Send(msg);
-                }
-            }
-        }
-        catch (SocketException socke)
-        {
-            if (socke.SocketErrorCode != SocketError.WouldBlock)
-            {
-                Console.WriteLine("Socket Error");
-            }
-        }
-        //UDP
-        //Clean the buffer so there is no garbage 
-        buffer = new byte[512];
-        try
-        {
-            //decode and then reencode I don't want to mess with converting byte arrays and stuff
-            EndPoint remote = new IPEndPoint(IPAddress.Any, 0);
-            int rec = UDPSocket.ReceiveFrom(buffer, ref remote);
-            Console.WriteLine("Gottem");
-            //Decoding
-
-            float[] pos = new float[rec / 4];
-            byte[] bpos = new byte[pos.Length * 4];
-            Buffer.BlockCopy(buffer, 0, pos, 0, rec);
-            Buffer.BlockCopy(pos, 0, bpos, 0, bpos.Length);
-
-            if (rec != 0)
-            {
-                //send the data back to the other computer
-                if (userList.Count > 1) 
-                {
-                    //Identify who sent it
-                    if (((IPEndPoint)remote).Port == userList[0].udpEndpoint.Port)
-                    {
-                        //Player 1 sent it
-                        UDPSocket.SendTo(bpos, userList[1].remoteEP);
-                    }
-                    else if (((IPEndPoint)remote).Port == userList[1].udpEndpoint.Port)
-                    {
-                        //player 2 sent it
-                        UDPSocket.SendTo(bpos, userList[0].remoteEP);
-                    }
                 }
             }
         }
