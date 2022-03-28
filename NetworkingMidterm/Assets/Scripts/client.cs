@@ -54,6 +54,7 @@ public class client : MonoBehaviour
     {
         if(GameManager.newUdpPort != 0 && !portAssigned)
         {
+            try {
             //assign the port
             EndPoint remote = new IPEndPoint(ip, GameManager.newUdpPort);
             client_socket = new Socket(ip.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
@@ -61,6 +62,8 @@ public class client : MonoBehaviour
             client_socket.Blocking = false;
 
             portAssigned = true;
+            }
+            catch{}
         }
     }
     // Update is called once per frame
