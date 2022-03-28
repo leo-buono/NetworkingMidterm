@@ -1,10 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "t/8ypb6gvl+FM+3GSPYxhXA40f2BA7ew6IjEa95KbLVuao7n0wz9CjH+XCcrbVWc/VE0C93iDz9yAlPZO6mo4g==",
+  "dgSpecHash": "z7LruvWI5jLp6SYkMlzOLrUDVsUNCkutn7160Rt07VHmY0wirp6ZY+9JjZ0vwJuQNydpMWFSnkM845hsDhdQ4w==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Leo B\\Documents\\GitHub\\NetworkingMidterm\\NetworkingMoment\\ServingYourOwnGamesItsEasierThanYouThink\\ServingYourOwnGamesItsEasierThanYouThink.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\Leo B\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.19\\microsoft.netcore.app.host.win-x64.3.1.19.nupkg.sha512"
-  ],
+  "projectFilePath": "C:\\Users\\jcnar\\Documents\\Github\\NetworkingMidterm\\NetworkingMoment\\ServingYourOwnGamesItsEasierThanYouThink\\ServingYourOwnGamesItsEasierThanYouThink.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }

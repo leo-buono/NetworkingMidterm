@@ -24,14 +24,21 @@ public class client : MonoBehaviour
     float[] prevPos = new float[3];
     private byte[] bpos;
 
-    bool portAssigned = false;
+    private bool portAssigned = false;
+    private bool firstTime = false;
 
-    public static IPAddress ip;
     public static void RunClient()
     {
-        ip = IPAddress.Parse("127.0.0.1");//192.168.2.144");
-        remoteEP = new IPEndPoint(ip, 11112);
+        try
+            {
+            remoteEP = new IPEndPoint(GameManager.ip, 11112);
+            client_socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+            }
 
+        catch 
+            {
+                Debug.Log("Invalid IP address");
+            }
     }
 
     // Start is called before the first frame update
@@ -39,29 +46,37 @@ public class client : MonoBehaviour
     {
         //This must be changed
 
-        RunClient();
+   
 
         //Lecture 05
         pos = new float[] { myCube.transform.position.x, myCube.transform.position.y, myCube.transform.position.z };
         bpos = new byte[pos.Length * 4];
-        Buffer.BlockCopy(pos, 0, bpos, 0, bpos.Length);
-        //client_socket.SendTo(bpos, remoteEP);
-        StartCoroutine(Downdate());
 
     }
 
     private void Update() 
     {
-        if(GameManager.newUdpPort != 0 && !portAssigned)
+        if (GameManager.isConnected == true)
+            {
+            RunClient();
+            firstTime = true;
+            }
+
+        if (GameManager.newUdpPort != 0 && !portAssigned && firstTime==true)
         {
             //assign the port
-            EndPoint remote = new IPEndPoint(ip, GameManager.newUdpPort);
-            client_socket = new Socket(ip.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
+            EndPoint remote = new IPEndPoint(GameManager.ip, GameManager.newUdpPort);
+            client_socket = new Socket(GameManager.ip.AddressFamily, SocketType.Dgram, ProtocolType.Udp);
             client_socket.Bind(remote);
             client_socket.Blocking = false;
 
+            firstTime = false;
             portAssigned = true;
-        }
+
+            Buffer.BlockCopy(pos, 0, bpos, 0, bpos.Length);
+            //client_socket.SendTo(bpos, remoteEP);
+            StartCoroutine(Downdate());
+            }
     }
     // Update is called once per frame
     // void Update()
