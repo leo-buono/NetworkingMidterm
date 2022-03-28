@@ -64,24 +64,24 @@ public class TCPServer
     public void StartServer() 
     {
         // Console.ReadKey();
-        Console.Write("Enter IP: ");
-        string read = Console.ReadLine();
+        //Console.Write("Enter IP: ");
+        //string read = Console.ReadLine();
         byte[] buffer = new byte[512];
         IPHostEntry hostInfo = Dns.GetHostEntry(Dns.GetHostName());
         IPAddress ip = null;
-        while (true)
-        {
-            try
-            {
-                ip = IPAddress.Parse(read);
-                Console.WriteLine("Hosting on: " + ip.ToString());
-                break;
-            }
-            catch
-            {
-                Console.WriteLine("Invalid IP");
-            }
-        }
+        //while (true)
+        //{
+        //    try
+        //    {
+        //        Console.WriteLine("Hosting on: " + ip.ToString());
+        //        break;
+        //    }
+        //    catch
+        //    {
+        //        Console.WriteLine("Invalid IP");
+        //    }
+        //}
+            ip = IPAddress.Parse("127.0.0.1");
 
         IPEndPoint localEP = new IPEndPoint(ip, 11111);
 
