@@ -226,7 +226,7 @@ public class TCPServer
             //Ok so it's waiting here to recieve something. I should make sure the socket is nonblocking because that could be a problem
             int recieved = handler.Receive(buffer);
 
-            Console.WriteLine("Recieved: {0}", Encoding.ASCII.GetString(buffer, 0, recieved));
+            Console.WriteLine("Recieved: \"{0}\" from {1}", Encoding.ASCII.GetString(buffer, 0, recieved), player.username);
             //It recieved a thing! Great, now send it off to both clients
             string messageToSend =  Encoding.ASCII.GetString(buffer, 0, recieved);
 
